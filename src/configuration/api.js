@@ -9,5 +9,5 @@ const generateApiObject = (key, url) => {
     }
 }
 
-const BASE_URI = "http://hn.algolia.com/api/v1";
+const BASE_URI = "https://hn.algolia.com/api/v1";
 export const NEWS = generateApiObject("NEWS", BASE_URI + "/search");
