@@ -5,10 +5,12 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import './index.css';
+import { Theme } from '../../configuration';
 
 export default class CardComponent extends Component {
 
-    onUpVote = (data) => {
+    onUpVote = (data, e) => {
+        e.preventDefault();
         this.props.onUpVote(data);
     }
 
@@ -17,17 +19,17 @@ export default class CardComponent extends Component {
     }
 
 
-    PaginationComponent = ({ isMobileView, onNext, onPrevious }) => {
+    PaginationComponent = ({ isMobileView, onNext, onPrevious, currentTheme }) => {
         let btnSize = isMobileView ? 'small' : 'middle';
         return (
             <div>
                 <div class="customCard paginationContainer" >
                     <Space size={10}>
-                        <Button type="primary" onClick={onPrevious} shape="round" icon={<CaretLeftOutlined />} size={btnSize}>
+                        <Button type="primary" style={{ color: currentTheme.textContrast, background: currentTheme.primary, borderColor: currentTheme.primary }} onClick={onPrevious} shape="round" icon={<CaretLeftOutlined />} size={btnSize}>
                             Previous
                     </Button>
 
-                        <Button type="primary" onClick={onNext} shape="round" icon={<CaretRightOutlined />} size={btnSize}>
+                        <Button type="primary" style={{ color: currentTheme.textContrast, background: currentTheme.primary, borderColor: currentTheme.primary }} onClick={onNext} shape="round" icon={<CaretRightOutlined />} size={btnSize}>
                             Next
                     </Button>
                     </Space>
@@ -43,23 +45,25 @@ export default class CardComponent extends Component {
             let cols = [];
             for (let j = i; j < i + cardsPerRow && j < data.length; j++) {
                 let col = <Col span={24 / cardsPerRow}>
-                    <Card style={{ margin: '8px 0px', background: currentTheme.textContrast }}
-                        actions={[
-                            <Badge count={data[j].points} showZero overflowCount={Number.MAX_VALUE}>
-                                <CaretUpOutlined key="upvote" style={{ fontSize: '20px' }} onClick={() => this.onUpVote(data[j])} />
-                            </Badge>,
-                            <EyeInvisibleOutlined key="hide" onClick={() => this.onHide(data[j])} />,
-                            <a href={data[j].url} target="_blank" rel="noopener noreferrer"><LinkOutlined key="link" /></a>
-                        ]}>
-                        <Skeleton loading={isLoading} avatar active>
-                            <Meta
-                                title={
-                                    <span style={{ color: currentTheme.textPrimary }} title={data[j].title}>{data[j].title || 'N/A'}</span>
-                                }
-                                description={<span><span style={{ color: '#1890ff' }}>by {data[j].author}</span> <span style={{ color: '#B2B2B2' }}>{moment(data[j].created_at).fromNow()}</span></span>}
-                            />
-                        </Skeleton>
-                    </Card>
+                    <div className="textClass" style={{ boxShadow: currentTheme.name === Theme.DARK_THEME.name ? '0 5px 8px 0 rgba(255,255,255,0.2),0 3px 10px 0 rgba(255,255,255,0.19)' : '0 5px 8px 0 rgba(0,0,0,0.2),0 3px 10px 0 rgba(0,0,0,0.19)' }}>
+                        <Card style={{ margin: '8px 0px', background: currentTheme.textContrast }}
+                            actions={[
+                                <Badge onClick={(e) => this.onUpVote(data[j], e)} count={data[j].points} showZero overflowCount={Number.MAX_VALUE}>
+                                    <CaretUpOutlined key="upvote" style={{ fontSize: '25px' }} />
+                                </Badge>,
+                                <EyeInvisibleOutlined key="hide" onClick={() => this.onHide(data[j])} />,
+                                <a href={data[j].url} target="_blank" rel="noopener noreferrer"><LinkOutlined key="link" /></a>
+                            ]}>
+                            <Skeleton loading={isLoading} avatar active>
+                                <Meta
+                                    title={
+                                        <span style={{ color: currentTheme.textPrimary }} title={data[j].title}>{data[j].title || 'N/A'}</span>
+                                    }
+                                    description={<span><span style={{ color: '#1890ff' }}>by {data[j].author}</span> <span style={{ color: '#B2B2B2' }}>{moment(data[j].created_at).fromNow()}</span></span>}
+                                />
+                            </Skeleton>
+                        </Card>
+                    </div>
                 </Col>
                 cols.push(col);
             }

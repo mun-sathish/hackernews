@@ -1,4 +1,5 @@
-import { Divider, Layout, Spin, Switch } from 'antd';
+import { BulbFilled } from '@ant-design/icons';
+import { Divider, Layout, Spin } from 'antd';
 import React, { Component } from 'react';
 import CardComponent from '../components/cardview';
 import ChartComponent from '../components/chartview';
@@ -147,16 +148,20 @@ class App extends Component {
 
   }
 
+  handleTheme = (e) => {
+    e.preventDefault();
+    let isDark = this.state.currentTheme.name !== Theme.DARK_THEME.name;
+    localStorage.setItem(Constants.STORAGE_KEYS.CURRENT_THEME, isDark ? Theme.DARK_THEME.name : Theme.LIGHT_THEME.name);
+    this.setState({ currentTheme: isDark ? Theme.DARK_THEME : Theme.LIGHT_THEME });
+  }
+
   render() {
     const { currentTheme } = this.state;
     return (
       <Layout className="layout">
         <Header style={{ background: currentTheme.primary }}>
-          <Switch style={{ margin: '20px 24px 20px 0', float: 'right' }} defaultChecked={currentTheme.name === Theme.DARK_THEME.name} onChange={(isDark) => {
-            localStorage.setItem(Constants.STORAGE_KEYS.CURRENT_THEME, isDark ? Theme.DARK_THEME.name : Theme.LIGHT_THEME.name);
-            this.setState({ currentTheme: isDark ? Theme.DARK_THEME : Theme.LIGHT_THEME });
-          }} />
-          <h2 style={{ color: currentTheme.textContrast }}>HackerNews {this.state.currentPage}</h2>
+          <BulbFilled onClick={this.handleTheme} style={{ margin: '20px 24px 20px 0', float: 'right', fontSize: '20px', color: currentTheme.name === Theme.DARK_THEME.name ? 'white' : 'yellow' }} />
+          <h2 style={{ color: currentTheme.textContrast }}>HackerNews</h2>
         </Header>
         <Content style={{ padding: '10px', background: currentTheme.background }}>
           {
